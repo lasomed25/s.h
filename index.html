@@ -1,289 +1,276 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Study Hub by Las Omed</title>
-<style>
-:root {
-  --bg:#fff;--text:#000;--card:#f3f3f3;
-}
-[data-theme="dark"] {
-  --bg:#0f172a;--text:#f1f5f9;--card:#1e293b;
-}
-body {
-  margin:0;font-family:Arial,Helvetica,sans-serif;
-  background:var(--bg);color:var(--text);transition:.3s;
-}
-header{
-  display:flex;justify-content:space-between;align-items:center;
-  background:var(--card);padding:10px 20px;position:sticky;top:0;
-}
-.menu{position:relative;}
-.menu button{background:none;border:none;font-size:24px;cursor:pointer;color:var(--text);}
-.dropdown{
-  display:none;position:absolute;right:0;top:35px;background:var(--card);
-  border-radius:8px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.2);
-}
-.dropdown a{display:block;padding:10px 20px;text-decoration:none;color:var(--text);}
-.dropdown a:hover{background:rgba(0,0,0,.1);}
-.show{display:block;}
-button.theme{
-  background:var(--card);border:none;padding:6px 12px;border-radius:6px;
-  cursor:pointer;color:var(--text);
-}
-.container{text-align:center;padding:60px 20px;}
-input,select,textarea{width:100%;padding:8px;margin:6px 0;border:none;border-radius:6px;}
-section{
-  display:none;max-width:500px;margin:20px auto;background:var(--card);
-  padding:20px;border-radius:10px;
-}
-.calc-buttons button{width:25%;padding:15px;margin:2px;border:none;background:var(--bg);color:var(--text);border-radius:6px;font-size:18px;cursor:pointer;}
-.calc-buttons button:hover{background:rgba(0,0,0,.1);}
-.leaderboard{
-  max-width:500px;margin:30px auto;background:var(--card);
-  padding:20px;border-radius:10px;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Study Hub by Las Omed</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #000000;
+      --primary: #0078ff;
+    }
+    [data-theme="dark"] {
+      --bg: #121212;
+      --text: #ffffff;
+      --primary: #00bfff;
+    }
+    body {
+      margin: 0;
+      font-family: Poppins, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background: var(--primary);
+      color: white;
+    }
+    .menu {
+      position: relative;
+    }
+    .menu button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .dropdown {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 40px;
+      background: var(--bg);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .dropdown a {
+      display: block;
+      padding: 10px 15px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .dropdown a:hover {
+      background: rgba(0,0,0,0.1);
+    }
+    main {
+      padding: 20px;
+      text-align: center;
+    }
+    .hidden { display: none; }
+    button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .leaderboard {
+      margin-top: 40px;
+      text-align: left;
+      max-width: 400px;
+      margin-inline: auto;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+    }
+  </style>
 </head>
-<body>
-<header>
-  <h2>Study Hub</h2>
-  <div style="display:flex;gap:10px;align-items:center;">
-    <button id="themeBtn" class="theme">🌙</button>
+<body data-theme="light">
+  <header>
+    <h2>Study Hub</h2>
     <div class="menu">
-      <button onclick="toggleMenu()">⋮</button>
-      <div id="dropdown" class="dropdown">
-        <a href="#" onclick="openSection('calc')">Calculator</a>
-        <a href="#" onclick="openSection('gpa')">GPA Calculator</a>
-        <a href="#" onclick="openSection('quiz')">Quiz Generator</a>
-        <a href="#" onclick="openSection('feedback')">Feedback</a>
-        <a href="#" onclick="openSection('contact')">Contact</a>
-        <a href="#" onclick="openSection('chat')">Chat</a>
+      <button id="menuBtn">⋮</button>
+      <div class="dropdown" id="menuDropdown">
+        <a href="#" onclick="showSection('calculator')">Calculator</a>
+        <a href="#" onclick="showSection('gpa')">GPA Calculator</a>
+        <a href="#" onclick="showSection('quiz')">Quiz Generator</a>
+        <a href="#" onclick="showSection('feedback')">Feedback</a>
+        <a href="#" onclick="showSection('contact')">Contact</a>
+        <a href="#" onclick="showSection('chat')">Chat</a>
       </div>
     </div>
-  </div>
-</header>
+  </header>
 
-<div class="container" id="welcome">
-  <h1>Welcome to Study Hub</h1>
-  <p>Enter your name to continue:</p>
-  <input id="username" placeholder="Your name">
-  <button onclick="enterSite()">Enter</button>
-</div>
+  <main id="welcomeScreen">
+    <h1>Welcome to Study Hub</h1>
+    <p>Enter your name to continue:</p>
+    <input type="text" id="usernameInput" placeholder="Your name" />
+    <button onclick="enterSite()">Enter</button>
+  </main>
 
-<div id="main" style="display:none;">
-  <div class="container">
-    <h1 id="greet"></h1>
-    <p>Select an option from the menu above.</p>
-  </div>
+  <main id="mainContent" class="hidden">
+    <button onclick="toggleTheme()">Toggle Dark/Light Mode</button>
+    <section id="calculator" class="hidden">
+      <h3>Calculator</h3>
+      <input id="calcInput" placeholder="e.g. 5+5*2" />
+      <button onclick="calculate()">=</button>
+      <p id="calcResult"></p>
+    </section>
 
-  <section id="calc">
-    <h3>Calculator</h3>
-    <input id="calcInput" placeholder="Type expression e.g. 5+3*2">
-    <button onclick="calculate()">Calculate</button>
-    <p id="calcResult"></p>
-  </section>
+    <section id="gpa" class="hidden">
+      <h3>GPA Calculator</h3>
+      <p>Enter grades separated by commas (e.g. 90,80,100):</p>
+      <input id="gpaInput" />
+      <button onclick="calcGPA()">Calculate</button>
+      <p id="gpaResult"></p>
+    </section>
 
-  <section id="gpa">
-    <h3>GPA Calculator</h3>
-    <div id="gpaCourses"></div>
-    <button onclick="addCourse()">Add Course</button>
-    <p id="gpaOutput"></p>
-  </section>
+    <section id="quiz" class="hidden">
+      <h3>Quiz Generator</h3>
+      <p>Select subject:</p>
+      <select id="subjectSelect">
+        <option>Math</option>
+        <option>Biology</option>
+        <option>Arabic</option>
+        <option>Kurdish</option>
+        <option>Turkish</option>
+        <option>English</option>
+      </select>
+      <button onclick="startQuiz()">Start Quiz</button>
+      <div id="quizBox"></div>
+    </section>
 
-  <section id="quiz">
-    <h3>Quiz Generator</h3>
-    <label>Choose subject:</label>
-    <select id="subjectSelect" onchange="loadTopics()">
-      <option value="">--Select--</option>
-      <option value="Math">Math</option>
-      <option value="Biology">Biology</option>
-      <option value="Turkish">Turkish</option>
-      <option value="Arabic">Arabic</option>
-      <option value="Kurdish">Kurdish</option>
-      <option value="English">English</option>
-    </select>
-    <div id="topicContainer"></div>
-    <div id="quizContainer"></div>
-  </section>
+    <section id="feedback" class="hidden">
+      <h3>Feedback</h3>
+      <textarea id="feedbackText" placeholder="Your feedback..." rows="4" cols="40"></textarea><br>
+      <button onclick="alert('Thanks for your feedback!')">Send</button>
+    </section>
 
-  <section id="feedback">
-    <h3>Feedback</h3>
-    <textarea id="feedbackText" placeholder="Write your feedback..."></textarea>
-    <button onclick="sendFeedback()">Send</button>
-    <p id="feedbackMsg"></p>
-  </section>
+    <section id="contact" class="hidden">
+      <h3>Contact</h3>
+      <p>Email: <a href="mailto:studyhub@iraq.com">studyhub@iraq.com</a></p>
+      <p>Instagram: <a href="https://instagram.com/Las_omed11">@Las_omed11</a></p>
+    </section>
 
-  <section id="contact">
-    <h3>Contact</h3>
-    <p>Email: <a href="mailto:lasomed11@gmail.com">lasomed11@gmail.com</a></p>
-    <p>Instagram: <a href="https://instagram.com/Lasomed22" target="_blank">@Las_omed11</a></p>
-  </section>
+    <section id="chat" class="hidden">
+      <h3>Chat</h3>
+      <!-- Chatango Embed -->
+      <script id="cid0020000421705628282" data-cfasync="false" async src="//st.chatango.com/js/gz/emb.js" style="width:100%;height:400px;">{"handle":"students-chat","arch":"js","styles":{"a":"CC0000","b":100,"c":"FFFFFF","d":"FFFFFF","k":"CC0000","l":"CC0000","m":"CC0000","n":"FFFFFF","p":"10","q":"CC0000","r":100,"pos":"br","cv":1,"cvbg":"CC0000","cvw":75,"cvh":30,"ticker":1,"fwtickm":1}}</script>
+    </section>
 
-  <section id="chat">
-    <h3>Chat</h3>
-    <p>Coming soon...</p>
-  </section>
+    <div class="leaderboard">
+      <h3>Leaderboard</h3>
+      <ul id="leaderboardList"></ul>
+    </div>
+  </main>
 
-  <div class="leaderboard" id="leaderboard">
-    <h3>Leaderboard</h3>
-    <ol id="leaderboardList"></ol>
-  </div>
-</div>
+  <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const menuDropdown = document.getElementById('menuDropdown');
+    menuBtn.onclick = () => menuDropdown.style.display = menuDropdown.style.display === 'block' ? 'none' : 'block';
 
-<script>
-let dark=localStorage.getItem('theme')==='dark';
-const themeBtn=document.getElementById('themeBtn');
-function setTheme(){document.documentElement.setAttribute('data-theme',dark?'dark':'light');themeBtn.textContent=dark?'☀️':'🌙';}
-themeBtn.onclick=()=>{dark=!dark;localStorage.setItem('theme',dark?'dark':'light');setTheme();};
-setTheme();
+    const userKey = 'studyhubUsers';
+    let currentUser = '';
 
-function toggleMenu(){document.getElementById('dropdown').classList.toggle('show');}
-window.onclick=e=>{if(!e.target.matches('.menu button'))document.getElementById('dropdown').classList.remove('show');};
-
-let username="";
-function enterSite(){
-  const name=document.getElementById('username').value.trim();
-  if(!name){alert("Please enter your name.");return;}
-  username=name;
-  document.getElementById('welcome').style.display='none';
-  document.getElementById('main').style.display='block';
-  document.getElementById('greet').textContent='Welcome, '+username+'!';
-  updateLeaderboard();
-}
-
-function openSection(id){
-  document.querySelectorAll('section').forEach(s=>s.style.display='none');
-  document.getElementById(id).style.display='block';
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function calculate(){
-  const input=document.getElementById('calcInput').value;
-  try{
-    if(!/^[-+*/0-9(). ]+$/.test(input))throw'Invalid';
-    const result=eval(input);
-    document.getElementById('calcResult').textContent='Result: '+result;
-  }catch{
-    document.getElementById('calcResult').textContent='Error';
-  }
-}
-
-function addCourse(){
-  const div=document.createElement('div');
-  div.innerHTML=`<input type='number' placeholder='Credits' class='cred'>
-                 <input type='number' placeholder='Grade 0-4' class='grade'>
-                 <button onclick='this.parentNode.remove();computeGPA();'>❌</button>`;
-  document.getElementById('gpaCourses').appendChild(div);
-  div.querySelectorAll('input').forEach(i=>i.oninput=computeGPA);
-}
-function computeGPA(){
-  const rows=[...document.querySelectorAll('#gpaCourses div')];
-  let total=0,cred=0;
-  rows.forEach(r=>{
-    const c=parseFloat(r.querySelector('.cred').value)||0;
-    const g=parseFloat(r.querySelector('.grade').value)||0;
-    total+=c*g;cred+=c;
-  });
-  document.getElementById('gpaOutput').textContent='GPA: '+(cred?(total/cred).toFixed(2):'—');
-}
-
-function sendFeedback(){
-  const text=document.getElementById('feedbackText').value.trim();
-  if(!text){document.getElementById('feedbackMsg').textContent='Please write feedback';return;}
-  document.getElementById('feedbackMsg').textContent='Feedback sent (demo only)';
-  document.getElementById('feedbackText').value='';
-}
-
-const subjects={
-  "Math":{ "Algebra":[
-    {q:"Simplify: 3x + 2x",a:["5x","6x","x","10x"],c:0},
-    {q:"Value of x if 2x=10?",a:["2","4","5","8"],c:2}
-  ],"Geometry":[
-    {q:"Sum of angles in triangle?",a:["90°","180°","270°","360°"],c:1},
-    {q:"How many sides in pentagon?",a:["4","5","6","8"],c:1}
-  ]},
-  "Biology":{"Cells":[
-    {q:"Basic unit of life?",a:["Atom","Molecule","Cell","Organ"],c:2},
-    {q:"Cell powerhouse?",a:["Nucleus","Mitochondria","Ribosome","Golgi"],c:1}
-  ],"Human Body":[
-    {q:"Blood pumped by?",a:["Liver","Brain","Heart","Lungs"],c:2},
-    {q:"Organ of vision?",a:["Ear","Eye","Nose","Skin"],c:1}
-  ]},
-  "Turkish":{"Basics":[
-    {q:"'Merhaba' means?",a:["Bye","Hi","Thanks","Yes"],c:1},
-    {q:"Color 'mavi'?",a:["Red","Green","Blue","Yellow"],c:2}
-  ]},
-  "Arabic":{"Basics":[
-    {q:"'كتاب' means?",a:["Pen","Book","Door","Bag"],c:1},
-    {q:"'مرحبا' means?",a:["Goodbye","Hello","Yes","No"],c:1}
-  ]},
-  "Kurdish":{"Basics":[
-    {q:"'Spas' means?",a:["Hello","Goodbye","Thanks","Please"],c:2},
-    {q:"'Roj' means?",a:["Day","Night","Sun","Sky"],c:0}
-  ]},
-  "English":{"Vocabulary":[
-    {q:"Synonym of big?",a:["Small","Large","Tiny","Thin"],c:1},
-    {q:"Antonym of cold?",a:["Hot","Cool","Warm","Snow"],c:0}
-  ]}
-};
-
-function loadTopics(){
-  const subj=document.getElementById('subjectSelect').value;
-  const topicContainer=document.getElementById('topicContainer');
-  topicContainer.innerHTML='';
-  if(!subj)return;
-  const topics=Object.keys(subjects[subj]);
-  let sel=document.createElement('select');
-  sel.id='topicSelect';
-  sel.innerHTML='<option value="">--Select Topic--</option>';
-  topics.forEach(t=>sel.innerHTML+=`<option value="${t}">${t}</option>`);
-  sel.onchange=startQuiz;
-  topicContainer.appendChild(sel);
-}
-
-function startQuiz(){
-  const subj=document.getElementById('subjectSelect').value;
-  const topic=document.getElementById('topicSelect').value;
-  const container=document.getElementById('quizContainer');
-  container.innerHTML='';
-  if(!topic)return;
-  let qlist=subjects[subj][topic];
-  let quiz=qlist.sort(()=>.5-Math.random()).slice(0,5);
-  let score=0,idx=0;
-  showQuestion();
-  function showQuestion(){
-    if(idx>=quiz.length){
-      container.innerHTML=`<h4>Your score: ${score}/${quiz.length}</h4>`;
-      saveScore(score);
-      updateLeaderboard();
-      return;
+    function enterSite() {
+      const name = document.getElementById('usernameInput').value.trim();
+      if (!name) return alert('Please enter your name');
+      currentUser = name;
+      document.getElementById('welcomeScreen').classList.add('hidden');
+      document.getElementById('mainContent').classList.remove('hidden');
+      loadLeaderboard();
     }
-    const q=quiz[idx];
-    container.innerHTML=`<p>${idx+1}. ${q.q}</p>`+q.a.map((a,i)=>`<button onclick='choose(${i})'>${a}</button>`).join('');
-  }
-  window.choose=i=>{
-    if(i===quiz[idx].c)score++;
-    idx++;showQuestion();
-  }
-}
 
-function saveScore(s){
-  let board=JSON.parse(localStorage.getItem('leaderboard')||'[]');
-  const existing=board.find(u=>u.name===username);
-  if(existing){existing.score=Math.max(existing.score,s);}
-  else board.push({name:username,score:s});
-  localStorage.setItem('leaderboard',JSON.stringify(board));
-}
+    function toggleTheme() {
+      const body = document.body;
+      const theme = body.getAttribute('data-theme');
+      body.setAttribute('data-theme', theme === 'light' ? 'dark' : 'light');
+    }
 
-function updateLeaderboard(){
-  const list=document.getElementById('leaderboardList');
-  list.innerHTML='';
-  let board=JSON.parse(localStorage.getItem('leaderboard')||'[]');
-  board.sort((a,b)=>b.score-a.score);
-  board.forEach(u=>{list.innerHTML+=`<li>${u.name}: ${u.score}</li>`;});
-}
-</script>
+    function showSection(id) {
+      document.querySelectorAll('#mainContent section').forEach(sec => sec.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+      menuDropdown.style.display = 'none';
+    }
+
+    function calculate() {
+      const input = document.getElementById('calcInput').value;
+      try { document.getElementById('calcResult').innerText = eval(input); }
+      catch { document.getElementById('calcResult').innerText = 'Error'; }
+    }
+
+    function calcGPA() {
+      const grades = document.getElementById('gpaInput').value.split(',').map(Number);
+      const avg = grades.reduce((a,b)=>a+b,0)/grades.length || 0;
+      document.getElementById('gpaResult').innerText = 'GPA: ' + (avg/25).toFixed(2);
+    }
+
+    const quizData = {
+      Math: [
+        {q:'2 + 2 = ?',a:['3','4','5','6'],c:1},
+        {q:'5 × 3 = ?',a:['8','15','10','12'],c:1}
+      ],
+      Biology: [
+        {q:'What is the basic unit of life?',a:['Cell','Atom','Molecule','Organ'],c:0},
+        {q:'Which organelle produces energy?',a:['Nucleus','Mitochondria','Ribosome','Chloroplast'],c:1}
+      ],
+      English: [
+        {q:'“Run” is a...',a:['Noun','Verb','Adjective','Pronoun'],c:1},
+        {q:'Opposite of “hot”?',a:['Cold','Warm','Cool','Burn'],c:0}
+      ],
+      Arabic: [
+        {q:'كم عدد حروف اللغة العربية؟',a:['28','27','30','26'],c:0}
+      ],
+      Kurdish: [
+        {q:'What is “school” in Kurdish?',a:['Qutabxane','Xwendn','Mamosta','Pênûs'],c:0}
+      ],
+      Turkish: [
+        {q:'What is “Hello” in Turkish?',a:['Merhaba','Hola','Bonjour','Hallo'],c:0}
+      ]
+    };
+
+    function startQuiz() {
+      const subject = document.getElementById('subjectSelect').value;
+      const box = document.getElementById('quizBox');
+      const questions = quizData[subject];
+      let score = 0, idx = 0;
+      if (!questions) return;
+      renderQuestion();
+
+      function renderQuestion() {
+        if (idx >= 5 || idx >= questions.length) {
+          box.innerHTML = `<h4>Done! You scored ${score}/${idx}</h4>`;
+          saveScore(score);
+          loadLeaderboard();
+          return;
+        }
+        const q = questions[idx];
+        box.innerHTML = `<p>${q.q}</p>` + q.a.map((x,i)=>`<button onclick="check(${i})">${x}</button>`).join('<br>');
+      }
+      window.check = i=>{
+        if (i===questions[idx].c) score++;
+        idx++;
+        renderQuestion();
+      }
+    }
+
+    function saveScore(score) {
+      const users = JSON.parse(localStorage.getItem(userKey) || '[]');
+      const existing = users.find(u=>u.name===currentUser);
+      if (existing) existing.score = Math.max(existing.score, score);
+      else users.push({name: currentUser, score});
+      localStorage.setItem(userKey, JSON.stringify(users));
+    }
+
+    function loadLeaderboard() {
+      const users = JSON.parse(localStorage.getItem(userKey) || '[]');
+      users.sort((a,b)=>b.score - a.score);
+      document.getElementById('leaderboardList').innerHTML =
+        users.map(u=>`<li>${u.name}: ${u.score}</li>`).join('');
+    }
+  </script>
 </body>
 </html>
