@@ -1,211 +1,506 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Study Hub by Las Omed</title>
 <style>
-  :root {
-    --bg: #ffffff;
-    --text: #000000;
-    --card: #f1f1f1;
+  :root{
+    --bg:#ffffff; --text:#0b1220; --card:#f4f6f8; --accent:#2563eb;
   }
-  [data-theme="dark"] {
-    --bg: #0f172a;
-    --text: #f1f5f9;
-    --card: #1e293b;
+  [data-theme="dark"]{
+    --bg:#071029; --text:#e6eef8; --card:#0f1724; --accent:#60a5fa;
   }
-  body {
-    margin:0;
-    font-family: Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    transition: 0.3s;
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:Inter,system-ui,Arial; background:var(--bg); color:var(--text);
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; transition:background .18s,color .18s;
   }
-  header {
-    display:flex;
-    justify-content: space-between;
-    align-items:center;
-    padding:10px 20px;
-    background: var(--card);
-    position:sticky;
-    top:0;
+  header{
+    position:sticky; top:0; background:var(--card); display:flex; align-items:center; justify-content:space-between;
+    padding:10px 16px; gap:12px; z-index:40; box-shadow:0 1px 0 rgba(0,0,0,0.04);
   }
-  .menu {
-    position: relative;
+  .brand{display:flex;align-items:center;gap:10px}
+  .logo{
+    width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#7dd3fc);
+    display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:16px;
   }
-  .menu button {
-    background:none;
-    border:none;
-    font-size:24px;
-    cursor:pointer;
-    color: var(--text);
-  }
-  .dropdown {
-    display:none;
-    position:absolute;
-    right:0;
-    top:35px;
-    background: var(--card);
-    border-radius:8px;
-    overflow:hidden;
-    box-shadow:0 2px 6px rgba(0,0,0,0.2);
-  }
-  .dropdown a {
-    display:block;
-    padding:10px 20px;
-    text-decoration:none;
-    color: var(--text);
-  }
-  .dropdown a:hover {
-    background:rgba(0,0,0,0.1);
-  }
-  .show {display:block;}
-  .container {
-    text-align:center;
-    padding:50px 20px;
-  }
-  button.theme {
-    background: var(--card);
-    border:none;
-    padding:8px 14px;
-    border-radius:6px;
-    cursor:pointer;
-    color: var(--text);
-  }
-  section {
-    display:none;
-    max-width:500px;
-    margin:30px auto;
-    background: var(--card);
-    padding:20px;
-    border-radius:10px;
-  }
-  input, textarea {
-    width:100%;
-    padding:8px;
-    margin:5px 0;
-    border:none;
-    border-radius:6px;
-  }
-  .calc-buttons button {
-    width:25%;
-    padding:15px;
-    margin:2px;
-    border:none;
-    background: var(--bg);
-    color: var(--text);
-    border-radius:6px;
-    font-size:18px;
-    cursor:pointer;
-  }
-  .calc-buttons button:hover {
-    background:rgba(0,0,0,0.1);
+  h1{margin:0;font-size:18px}
+  header .controls{display:flex;gap:10px;align-items:center}
+  .icon-btn{background:transparent;border:0;padding:8px;border-radius:8px;font-size:18px;cursor:pointer}
+  /* menu */
+  .menu{position:relative}
+  .menu-list{position:absolute;right:0;top:48px;background:var(--card);min-width:180px;border-radius:10px;overflow:hidden;
+    box-shadow:0 6px 24px rgba(2,6,23,0.12);display:none}
+  .menu-list.show{display:block}
+  .menu-list a, .menu-list button{display:block;text-align:left;padding:10px 12px;border:0;background:transparent;color:var(--text);
+    text-decoration:none;cursor:pointer;font-size:14px;width:100%}
+  .menu-list a:hover, .menu-list button:hover{background:rgba(0,0,0,0.06)}
+  .submenu{display:none}
+  .menu-item-with-sub:hover .submenu{display:block;position:absolute;right:100%;top:0;margin-right:6px}
+  /* container */
+  .wrap{max-width:980px;margin:24px auto;padding:16px}
+  .hero{padding:28px;border-radius:14px;background:var(--card);text-align:center}
+  .hero h2{font-size:28px;margin:0 0 8px}
+  .hero p{margin:0 0 14px;color:rgba(0,0,0,0.6)}
+  [data-theme="dark"] .hero p{color:rgba(230,238,248,0.8)}
+  select.grade{padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.08);min-width:140px}
+  .small{font-size:13px;color:rgba(0,0,0,0.6)}
+  [data-theme="dark"] .small{color:rgba(230,238,248,0.75)}
+  /* sections */
+  section.card{display:none;margin-top:20px;background:var(--card);padding:16px;border-radius:12px}
+  section.card.show{display:block}
+  input, textarea{padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.08);width:100%;background:transparent;color:var(--text)}
+  .btn{padding:10px 14px;border-radius:10px;border:0;background:var(--accent);color:white;cursor:pointer}
+  .secondary{background:transparent;border:1px solid rgba(0,0,0,0.08);color:var(--text)}
+  .flex{display:flex;gap:8px;align-items:center}
+  /* calculator numeric buttons */
+  .calc-buttons{display:flex;flex-wrap:wrap;margin-top:8px}
+  .calc-buttons button{flex:1 0 22%;margin:6px;padding:12px;border-radius:8px;border:0;background:var(--bg);cursor:pointer;font-size:18px}
+  .results{margin-top:10px;font-weight:600}
+  /* quiz */
+  .quiz-wrap{max-width:760px;margin:8px auto 0}
+  .question{padding:14px;border-radius:10px;background:var(--bg);border:1px solid rgba(0,0,0,0.06)}
+  .choices{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+  .choice{padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);cursor:pointer}
+  .choice.selected{background:rgba(37,99,235,0.1);border-color:var(--accent)}
+  .choice.correct{background:rgba(34,197,94,0.12);border-color:rgba(34,197,94,0.5)}
+  .choice.wrong{background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.35)}
+  .center{display:flex;justify-content:center;gap:8px;margin-top:14px}
+  /* responsive */
+  @media (max-width:640px){
+    .hero h2{font-size:20px}
+    .logo{width:40px;height:40px;font-size:14px}
   }
 </style>
 </head>
-<body>
+<body data-theme="">
 <header>
-  <h2>Study Hub</h2>
-  <div style="display:flex;gap:10px;align-items:center;">
-    <button class="theme" id="themeBtn">🌙</button>
+  <div class="brand" style="gap:12px">
+    <div class="logo">SH</div>
+    <div>
+      <h1>Study Hub</h1>
+      <div class="small">By Las Omed — Iraq Olympiad Prep</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="icon-btn" id="themeToggle" title="Toggle theme">🌙</button>
+
     <div class="menu">
-      <button onclick="toggleMenu()">⋮</button>
-      <div class="dropdown" id="dropdown">
-        <a href="#" onclick="openSection('calc')">Calculator</a>
-        <a href="#" onclick="openSection('gpa')">GPA Calculator</a>
-        <a href="#" onclick="openSection('feedback')">Feedback</a>
-        <a href="#" onclick="openSection('contact')">Contact</a>
+      <button class="icon-btn" id="menuBtn" aria-haspopup="true" aria-expanded="false">⋮</button>
+      <div class="menu-list" id="menuList" role="menu" aria-label="Menu">
+        <a href="#" data-action="open" data-target="calc">Calculator</a>
+        <a href="#" data-action="open" data-target="gpa">GPA Calculator</a>
+        <a href="#" data-action="open" data-target="feedback">Feedback</a>
+        <a href="#" data-action="open" data-target="contact">Contact</a>
+
+        <div style="border-top:1px solid rgba(0,0,0,0.06)"></div>
+
+        <div style="position:relative">
+          <button class="menu-item-with-sub" style="width:100%;text-align:left;padding:10px 12px;border:0;background:transparent;cursor:pointer">Generate Quiz ▸</button>
+          <div class="submenu" style="position:absolute;right:0;top:0;background:var(--card);border-radius:8px;overflow:hidden;box-shadow:0 6px 20px rgba(2,6,23,0.12)">
+            <button class="quiz-subject" data-subject="Math">Math</button>
+            <button class="quiz-subject" data-subject="Biology">Biology</button>
+            <button class="quiz-subject" data-subject="Turkish">Turkish</button>
+            <button class="quiz-subject" data-subject="Arabic">Arabic</button>
+            <button class="quiz-subject" data-subject="Kurdish">Kurdish</button>
+            <button class="quiz-subject" data-subject="English">English</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </header>
 
-<div class="container">
-  <h1>Welcome to Study Hub by Las Omed</h1>
-  <p>Your space to learn, calculate, and prepare for the Olympiad!</p>
-</div>
+<main class="wrap">
+  <div class="hero" role="banner">
+    <h2>Welcome to Study Hub by Las Omed</h2>
+    <p class="small">Choose your grade below to get content and quizzes matched to your level.</p>
 
-<section id="calc">
-  <h3>Calculator</h3>
-  <input id="calcInput" placeholder="Type expression e.g. 5+3*2">
-  <button onclick="calculate()">Calculate</button>
-  <p id="calcResult"></p>
-</section>
+    <div style="margin-top:16px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <label style="display:flex;align-items:center;gap:8px">
+        <span class="small">Grade</span>
+        <select id="gradeSelect" class="grade" aria-label="Choose grade">
+          <!-- options inserted by JS -->
+        </select>
+      </label>
+      <button class="btn" id="startQuizBtn">Generate Quick Quiz</button>
+      <button class="secondary" id="openMenuBtn">Open Menu</button>
+    </div>
+  </div>
 
-<section id="gpa">
-  <h3>GPA Calculator</h3>
-  <div id="gpaCourses"></div>
-  <button onclick="addCourse()">Add Course</button>
-  <p id="gpaOutput"></p>
-</section>
+  <!-- Calculator -->
+  <section id="calc" class="card">
+    <h3>Calculator</h3>
+    <input id="calcInput" placeholder="Type expression e.g. (3+5)*2" />
+    <div class="calc-buttons" style="margin-top:8px">
+      <button data-val="7">7</button><button data-val="8">8</button><button data-val="9">9</button><button data-val="/">÷</button>
+      <button data-val="4">4</button><button data-val="5">5</button><button data-val="6">6</button><button data-val="*">×</button>
+      <button data-val="1">1</button><button data-val="2">2</button><button data-val="3">3</button><button data-val="-">−</button>
+      <button data-val="0">0</button><button data-val=".">.</button><button id="calcClear">C</button><button data-val="+">+</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn" id="calcEval">Calculate</button>
+      <button class="secondary" id="calcCopy">Copy Result</button>
+    </div>
+    <div class="results" id="calcResult"></div>
+  </section>
 
-<section id="feedback">
-  <h3>Feedback</h3>
-  <textarea id="feedbackText" placeholder="Write your feedback..."></textarea>
-  <button onclick="sendFeedback()">Send</button>
-  <p id="feedbackMsg"></p>
-</section>
+  <!-- GPA -->
+  <section id="gpa" class="card">
+    <h3>GPA Calculator</h3>
+    <div id="coursesArea"></div>
+    <div style="margin-top:10px;display:flex;gap:8px">
+      <button class="secondary" id="addCourseBtn">Add course</button>
+      <div style="flex:1;display:flex;align-items:center;justify-content:flex-end">
+        <div class="small">GPA: <strong id="gpaValue">—</strong></div>
+      </div>
+    </div>
+  </section>
 
-<section id="contact">
-  <h3>Contact</h3>
-  <p>Email: <a href="mailto:lasomed11@gmail.com">lasomed11@gmail.com</a></p>
-  <p>Instagram: <a href="https://instagram.com/Las_omed11" target="_blank">@Las_omed11</a></p>
-</section>
+  <!-- Feedback -->
+  <section id="feedback" class="card">
+    <h3>Feedback</h3>
+    <textarea id="feedbackText" rows="4" placeholder="Share what you like or problems you see..."></textarea>
+    <div style="margin-top:8px;display:flex;gap:8px">
+      <button class="btn" id="sendFeedback">Send</button>
+      <button class="secondary" id="viewFeedback">View saved</button>
+    </div>
+    <div id="feedbackMsg" style="margin-top:8px"></div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="card">
+    <h3>Contact</h3>
+    <p class="small">Email: <a href="mailto:lasomed11@gmail.com">lasomed11@gmail.com</a></p>
+    <p class="small">Instagram: <a href="https://instagram.com/Las_omed11" target="_blank">@Las_omed11</a></p>
+  </section>
+
+  <!-- Quiz area -->
+  <section id="quiz" class="card">
+    <h3 id="quizTitle">Quiz</h3>
+    <div class="quiz-wrap" id="quizWrap">
+      <!-- dynamic question area here -->
+      <div id="quizIntro" style="text-align:center">
+        <p class="small">Choose a subject from the menu or press Generate Quick Quiz to start a 5-question test.</p>
+      </div>
+      <div id="questionArea" style="display:none"></div>
+      <div id="quizFooter" style="display:none" class="center"></div>
+    </div>
+  </section>
+</main>
 
 <script>
-  const themeBtn=document.getElementById('themeBtn');
-  const dropdown=document.getElementById('dropdown');
-  let dark=localStorage.getItem('theme')==='dark';
-  setTheme();
-  themeBtn.onclick=()=>{dark=!dark;localStorage.setItem('theme',dark?'dark':'light');setTheme();};
-  function setTheme(){document.documentElement.setAttribute('data-theme',dark?'dark':'light');themeBtn.textContent=dark?'☀️':'🌙';}
-  function toggleMenu(){dropdown.classList.toggle('show');}
-  window.onclick=e=>{if(!e.target.matches('.menu button'))dropdown.classList.remove('show');};
+/* ---------- theme ---------- */
+const themeToggle = document.getElementById('themeToggle');
+const root = document.documentElement;
+let dark = localStorage.getItem('sh_theme')==='dark';
+applyTheme();
+themeToggle.addEventListener('click', () => { dark = !dark; localStorage.setItem('sh_theme', dark?'dark':'light'); applyTheme(); });
+function applyTheme(){
+  root.setAttribute('data-theme', dark ? 'dark' : '');
+  themeToggle.textContent = dark ? '☀️' : '🌙';
+}
 
-  function openSection(id){
-    document.querySelectorAll('section').forEach(s=>s.style.display='none');
-    document.getElementById(id).style.display='block';
-    window.scrollTo({top:0,behavior:'smooth'});
-  }
+/* ---------- grade select ---------- */
+const gradeSel = document.getElementById('gradeSelect');
+for(let g=1; g<=12; g++){
+  const opt = document.createElement('option');
+  opt.value = g; opt.textContent = 'Grade ' + g;
+  gradeSel.appendChild(opt);
+}
+gradeSel.value = localStorage.getItem('sh_grade') || '9';
+gradeSel.addEventListener('change', ()=> localStorage.setItem('sh_grade', gradeSel.value));
 
-  function calculate(){
-    const input=document.getElementById('calcInput').value;
-    try{
-      if(!/^[-+*/0-9(). ]+$/.test(input))throw'Invalid';
-      const result=eval(input);
-      document.getElementById('calcResult').textContent='Result: '+result;
-    }catch{
-      document.getElementById('calcResult').textContent='Error';
-    }
-  }
+/* ---------- menu logic ---------- */
+const menuBtn = document.getElementById('menuBtn');
+const menuList = document.getElementById('menuList');
+menuBtn.addEventListener('click', e => { e.stopPropagation(); menuList.classList.toggle('show'); });
+document.getElementById('openMenuBtn').addEventListener('click', ()=> menuList.classList.toggle('show'));
+document.addEventListener('click', ()=> menuList.classList.remove('show'));
+menuList.addEventListener('click', e=> e.stopPropagation());
 
-  let courses=[];
-  function addCourse(){
-    const div=document.createElement('div');
-    div.innerHTML=`<input type='number' placeholder='Credits' class='cred'>
-                   <input type='number' placeholder='Grade 0-4' class='grade'>
-                   <button onclick='this.parentNode.remove();computeGPA();'>❌</button>`;
-    document.getElementById('gpaCourses').appendChild(div);
-    div.querySelectorAll('input').forEach(i=>i.oninput=computeGPA);
-  }
-  function computeGPA(){
-    const rows=[...document.querySelectorAll('#gpaCourses div')];
-    let total=0,cred=0;
-    rows.forEach(r=>{
-      const c=parseFloat(r.querySelector('.cred').value)||0;
-      const g=parseFloat(r.querySelector('.grade').value)||0;
-      total+=c*g;cred+=c;
+/* handle menu open actions */
+menuList.querySelectorAll('[data-action="open"]').forEach(a=>{
+  a.addEventListener('click', (e)=>{
+    e.preventDefault();
+    const target = a.dataset.target;
+    openSection(target);
+    menuList.classList.remove('show');
+  });
+});
+
+/* quiz subject buttons */
+document.querySelectorAll('.quiz-subject').forEach(btn=>{
+  btn.addEventListener('click', ()=> {
+    const subj = btn.dataset.subject;
+    startQuiz(subj);
+    menuList.classList.remove('show');
+  });
+});
+
+/* quick start from hero */
+document.getElementById('startQuizBtn').addEventListener('click', ()=>{
+  // default: Math quick quiz
+  const subj = 'Math';
+  startQuiz(subj);
+});
+
+/* ---------- open section helper ---------- */
+function openSection(id){
+  document.querySelectorAll('section.card').forEach(s => s.classList.remove('show'));
+  const el = document.getElementById(id);
+  if(el) el.classList.add('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ---------- simple calculator ---------- */
+const calcInput = document.getElementById('calcInput');
+const calcResult = document.getElementById('calcResult');
+document.querySelectorAll('.calc-buttons button[data-val]').forEach(b=>{
+  b.addEventListener('click', ()=> { calcInput.value += b.dataset.val; });
+});
+document.getElementById('calcClear').addEventListener('click', ()=> { calcInput.value=''; calcResult.textContent=''; });
+document.getElementById('calcEval').addEventListener('click', calculate);
+document.getElementById('calcCopy').addEventListener('click', ()=> {
+  if(calcResult.textContent) navigator.clipboard?.writeText(calcResult.textContent);
+});
+function calculate(){
+  const v = calcInput.value.trim();
+  try{
+    if(!v) throw '';
+    if(!/^[-+*\/().0-9\s]+$/.test(v)) throw 'invalid';
+    // eslint-disable-next-line no-eval
+    const r = eval(v);
+    calcResult.textContent = 'Result: ' + r;
+  }catch(e){ calcResult.textContent = 'Error'; }
+}
+
+/* ---------- GPA ---------- */
+const coursesArea = document.getElementById('coursesArea');
+const gpaValue = document.getElementById('gpaValue');
+document.getElementById('addCourseBtn').addEventListener('click', addCourse);
+function addCourse(credit=3, grade=4){
+  const row = document.createElement('div');
+  row.style.display='flex'; row.style.gap='8px'; row.style.marginTop='8px';
+  const cred = document.createElement('input'); cred.type='number'; cred.placeholder='credits'; cred.value=credit; cred.style.width='80px';
+  const gr = document.createElement('input'); gr.type='number'; gr.placeholder='grade 0-4'; gr.value=grade; gr.style.width='80px';
+  const del = document.createElement('button'); del.textContent='❌'; del.className='secondary'; del.onclick=()=>{ row.remove(); computeGPA(); };
+  [cred,gr].forEach(i=> i.addEventListener('input', computeGPA));
+  row.appendChild(cred); row.appendChild(gr); row.appendChild(del);
+  coursesArea.appendChild(row);
+  computeGPA();
+}
+function computeGPA(){
+  const rows = [...coursesArea.querySelectorAll('div')];
+  let total=0, csum=0;
+  rows.forEach(r=>{
+    const cred = parseFloat(r.children[0].value) || 0;
+    const gr = parseFloat(r.children[1].value) || 0;
+    total += cred*gr; csum += cred;
+  });
+  gpaValue.textContent = csum ? (total/csum).toFixed(2) : '—';
+}
+
+/* ---------- feedback ---------- */
+const fbText = document.getElementById('feedbackText');
+const fbMsg = document.getElementById('feedbackMsg');
+document.getElementById('sendFeedback').addEventListener('click', ()=> {
+  const t = fbText.value.trim();
+  if(!t){ fbMsg.textContent='Please write feedback'; return; }
+  const all = JSON.parse(localStorage.getItem('sh_feedback')||'[]');
+  all.push({text:t,ts:new Date().toISOString()});
+  localStorage.setItem('sh_feedback', JSON.stringify(all));
+  fbMsg.textContent='Saved locally. Thank you!';
+  fbText.value=''; setTimeout(()=> fbMsg.textContent='',2200);
+});
+document.getElementById('viewFeedback').addEventListener('click', ()=> {
+  const all = JSON.parse(localStorage.getItem('sh_feedback')||'[]');
+  if(!all.length){ fbMsg.textContent='No feedback saved'; return; }
+  fbMsg.textContent = all.map(x=> `${new Date(x.ts).toLocaleString()}: ${x.text}`).join(' — ');
+});
+
+/* ---------- QUIZ: question banks ---------- */
+/* Each question has: text, choices[], answer (index), minGrade, maxGrade */
+const BANK = {
+  Math:[
+    {text:"What is 7 + 5?", choices:["10","11","12","13"], answer:2, min:1,max:4},
+    {text:"Solve: 3×(4+2) = ?", choices:["18","20","15","12"], answer:0, min:1,max:6},
+    {text:"What is the derivative of x^2 ?", choices:["1","2x","x","x^2"], answer:1, min:7,max:12},
+    {text:"If 2x+3=11, x = ?", choices:["3","4","5","6"], answer:1, min:5,max:9},
+    {text:"What is 15% of 200?", choices:["20","25","30","35"], answer:2, min:4,max:8},
+    {text:"Area of a circle formula?", choices:["πr^2","2πr","πd","r^2"], answer:0, min:6,max:12},
+    {text:"Simplify: (2x)(3x) = ?", choices:["6x","5x^2","6x^2","x^2"], answer:2, min:6,max:10},
+    {text:"Solve: x^2 - 4 = 0. Roots are:", choices:["±2","2","0","±4"], answer:0, min:8,max:12},
+    {text:"What is 8 ÷ 0.5 ?", choices:["4","16","0.4","-4"], answer:1, min:5,max:10},
+    {text:"What is the slope of line y = 3x + 2 ?", choices:["2","3","-3","1"], answer:1, min:7,max:12}
+  ],
+  Biology:[
+    {text:"Which organ pumps blood through the body?", choices:["Liver","Brain","Heart","Lungs"], answer:2, min:1,max:6},
+    {text:"What do plants use to make food?", choices:["Soil","Sunlight","Water only","Air only"], answer:1, min:1,max:6},
+    {text:"Basic unit of life is?", choices:["Organ","Tissue","Cell","Molecule"], answer:2, min:4,max:10},
+    {text:"Which blood cells fight infections?", choices:["Red cells","White cells","Platelets","Plasma"], answer:1, min:7,max:12},
+    {text:"DNA is found in which cell part?", choices:["Ribosome","Nucleus","Cell wall","Cytoplasm"], answer:1, min:8,max:12},
+    {text:"Photosynthesis takes place mainly in which cell organelle?", choices:["Mitochondria","Chloroplast","Nucleus","Golgi apparatus"], answer:1, min:6,max:12}
+  ],
+  Turkish:[
+    {text:"Which is a greeting in Turkish?", choices:["Hola","Merhaba","Bonjour","Ciao"], answer:1, min:1,max:12},
+    {text:"'Ev' in Turkish means:", choices:["School","Home","Food","Car"], answer:1, min:1,max:6},
+    {text:"Plural of 'kitap' (book) is:", choices:["kitaps","kitaplar","kitapi","kitaplarım"], answer:1, min:4,max:12},
+    {text:"Which word is a verb? 'Yazmak' means:", choices:["To write","Beautiful","Book","Home"], answer:0, min:6,max:12}
+  ],
+  Arabic:[
+    {text:"How do you say 'hello' in Arabic (common)?", choices:["Hola","Marhaba","Bonjour","Ciao"], answer:1, min:1,max:12},
+    {text:"The Arabic script is written from:", choices:["Left to right","Top to bottom","Right to left","Bottom to top"], answer:2, min:1,max:12},
+    {text:"'Kitab' (كتاب) means:", choices:["House","Book","Food","Pen"], answer:1, min:3,max:12}
+  ],
+  Kurdish:[
+    {text:"Kurdish greeting 'Slaw' means:", choices:["Goodbye","Hello","Thank you","Please"], answer:1, min:1,max:12},
+    {text:"Which is Kurdish word for 'house' (some dialects)?", choices:["Mal","Dar","Kitab","Qelem"], answer:0, min:2,max:12},
+    {text:"Kurdish is mainly spoken in:", choices:["South America","Middle East","East Asia","Oceania"], answer:1, min:1,max:12}
+  ],
+  English:[
+    {text:"Which is a noun?", choices:["Run","Beautiful","Cat","Quickly"], answer:2, min:1,max:12},
+    {text:"Choose the correct past form: 'go' →", choices:["goed","went","gone","goes"], answer:1, min:2,max:8},
+    {text:"Synonym of 'big' is:", choices:["Tiny","Large","Short","Empty"], answer:1, min:1,max:12},
+    {text:"Which sentence is correct?", choices:["She don't like it.","She doesn't like it.","She not likes it.","She no like it."], answer:1, min:4,max:12}
+  ]
+};
+
+/* ---------- quiz runner ---------- */
+const quizTitle = document.getElementById('quizTitle');
+const quizWrap = document.getElementById('quizWrap');
+const questionArea = document.getElementById('questionArea');
+const quizFooter = document.getElementById('quizFooter');
+
+let currentQuiz = null;
+
+function pickQuestions(subject, grade, count=5){
+  const pool = (BANK[subject] || []).filter(q => q.min <= grade && q.max >= grade);
+  // if pool too small, fallback to subject pool without grade filter
+  const poolUsed = pool.length >= count ? pool : (BANK[subject] || []).slice();
+  // shuffle
+  const arr = poolUsed.slice();
+  for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; }
+  return arr.slice(0,count);
+}
+
+function startQuiz(subject){
+  const grade = parseInt(gradeSel.value || '9',10);
+  localStorage.setItem('sh_grade', grade);
+  openSection('quiz');
+  quizTitle.textContent = `Quiz — ${subject} (Grade ${grade})`;
+  const qs = pickQuestions(subject, grade, 5);
+  if(qs.length===0){ questionArea.innerHTML = `<div class="small">No questions available for ${subject} at grade ${grade} — try another subject or change grade.</div>`; questionArea.style.display='block'; quizFooter.style.display='none'; return; }
+  currentQuiz = {subject,grade,qs,idx:0,score:0,answers:[]};
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const qObj = currentQuiz.qs[currentQuiz.idx];
+  questionArea.innerHTML = '';
+  questionArea.style.display='block';
+  quizFooter.style.display='flex';
+  const qdiv = document.createElement('div'); qdiv.className='question';
+  qdiv.innerHTML = `<div style="font-weight:700">Q${currentQuiz.idx+1}. ${escapeHtml(qObj.text)}</div>`;
+  const ch = document.createElement('div'); ch.className='choices';
+  qObj.choices.forEach((c,i)=>{
+    const btn = document.createElement('div'); btn.className='choice'; btn.tabIndex=0;
+    btn.innerHTML = `<span>${String.fromCharCode(65+i)}.</span> <span style="margin-left:8px">${escapeHtml(c)}</span>`;
+    btn.addEventListener('click', ()=> selectChoice(i, btn));
+    ch.appendChild(btn);
+  });
+  qdiv.appendChild(ch);
+  questionArea.appendChild(qdiv);
+  quizFooter.innerHTML = `<div style="width:100%;display:flex;justify-content:space-between;align-items:center">
+    <div class="small">Question ${currentQuiz.idx+1} / ${currentQuiz.qs.length}</div>
+    <div style="display:flex;gap:8px"><button class="secondary" id="skipBtn">Skip</button><button class="btn" id="nextBtn" disabled>Next</button></div>
+  </div>`;
+  document.getElementById('skipBtn').addEventListener('click', ()=> nextQuestion(null));
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.addEventListener('click', ()=> {
+    // already handled in selectChoice; but if allowed, call next
+    nextQuestion();
+  });
+}
+
+function selectChoice(choiceIndex, elem){
+  // mark selection UI
+  const choices = [...questionArea.querySelectorAll('.choice')];
+  choices.forEach(c=> c.classList.remove('selected'));
+  elem.classList.add('selected');
+  // enable next
+  const nextBtn = document.getElementById('nextBtn');
+  if(nextBtn) nextBtn.disabled = false;
+  // store answer on Next click handled by nextQuestion
+  // but also mark immediately if we want instant feedback — keep until next
+  // temporarily store selection
+  currentQuiz._pending = choiceIndex;
+}
+
+function nextQuestion(forced=null){
+  const qObj = currentQuiz.qs[currentQuiz.idx];
+  const chosen = (typeof currentQuiz._pending === 'number') ? currentQuiz._pending : forced;
+  currentQuiz.answers.push({chosen, correct: qObj.answer});
+  if(typeof chosen === 'number' && chosen === qObj.answer) currentQuiz.score++;
+  // clear pending
+  delete currentQuiz._pending;
+  currentQuiz.idx++;
+  if(currentQuiz.idx >= currentQuiz.qs.length){ showResults(); } else { renderQuestion(); }
+}
+
+function showResults(){
+  questionArea.innerHTML = '';
+  quizFooter.style.display='none';
+  const wrap = document.createElement('div');
+  wrap.innerHTML = `<div style="text-align:center;margin-bottom:12px"><div style="font-size:20px;font-weight:700">Score: ${currentQuiz.score} / ${currentQuiz.qs.length}</div>
+    <div class="small" style="margin-top:6px">Subject: ${escapeHtml(currentQuiz.subject)} • Grade: ${currentQuiz.grade}</div></div>`;
+  // show each question with correct/your answer
+  currentQuiz.qs.forEach((q,i)=>{
+    const row = document.createElement('div'); row.style.marginTop='10px';
+    const your = currentQuiz.answers[i].chosen;
+    const correct = q.answer;
+    const qbox = document.createElement('div'); qbox.className='question';
+    qbox.innerHTML = `<div style="font-weight:700">Q${i+1}. ${escapeHtml(q.text)}</div>`;
+    const list = document.createElement('div'); list.className='choices';
+    q.choices.forEach((c,j)=>{
+      const ch = document.createElement('div'); ch.className='choice';
+      ch.innerHTML = `<strong>${String.fromCharCode(65+j)}.</strong> <span style="margin-left:8px">${escapeHtml(c)}</span>`;
+      if(j===correct) ch.classList.add('correct');
+      if(typeof your==='number' && j===your && j!==correct) ch.classList.add('wrong');
+      list.appendChild(ch);
     });
-    document.getElementById('gpaOutput').textContent='GPA: '+(cred?(total/cred).toFixed(2):'—');
-  }
+    qbox.appendChild(list); row.appendChild(qbox);
+    wrap.appendChild(row);
+  });
+  wrap.appendChild(document.createElement('div'));
+  const controls = document.createElement('div'); controls.style.marginTop='14px'; controls.style.display='flex'; controls.style.justifyContent='center'; controls.style.gap='10px';
+  const retry = document.createElement('button'); retry.className='btn'; retry.textContent='Retake'; retry.onclick = ()=> startQuiz(currentQuiz.subject);
+  const home = document.createElement('button'); home.className='secondary'; home.textContent='Back to Home'; home.onclick = ()=> { document.getElementById('quizIntro').style.display='block'; questionArea.style.display='none'; openSection(''); window.scrollTo({top:0,behavior:'smooth'}); };
+  controls.appendChild(retry); controls.appendChild(home);
+  wrap.appendChild(controls);
+  questionArea.appendChild(wrap);
+  // save attempt summary locally (optional)
+  const stats = JSON.parse(localStorage.getItem('sh_quiz_stats')||'[]');
+  stats.push({subject:currentQuiz.subject,grade:currentQuiz.grade,score:currentQuiz.score,total:currentQuiz.qs.length,ts:new Date().toISOString()});
+  localStorage.setItem('sh_quiz_stats', JSON.stringify(stats));
+}
 
-  function sendFeedback(){
-    const text=document.getElementById('feedbackText').value.trim();
-    if(!text){document.getElementById('feedbackMsg').textContent='Please write feedback';return;}
-    document.getElementById('feedbackMsg').textContent='Feedback sent (demo only)';
-    document.getElementById('feedbackText').value='';
+/* ---------- helpers ---------- */
+function escapeHtml(s){ return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+/* ---------- initialize small defaults ---------- */
+if(!coursesArea.children.length) { addCourse(3,4); addCourse(3,3); }
+
+/* ---------- start if user pressed menu quick start (from header) ---------- */
+/* Allow pressing Enter to trigger next if selected choice */
+document.addEventListener('keydown', (e)=>{
+  if(e.key==='Enter'){
+    const next = document.getElementById('nextBtn');
+    if(next && !next.disabled) next.click();
   }
+});
 </script>
 </body>
 </html>
