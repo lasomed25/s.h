@@ -1,276 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Study Hub by Las Omed</title>
-  <style>
-    :root {
-      --bg: #ffffff;
-      --text: #000000;
-      --primary: #0078ff;
-    }
-    [data-theme="dark"] {
-      --bg: #121212;
-      --text: #ffffff;
-      --primary: #00bfff;
-    }
-    body {
-      margin: 0;
-      font-family: Poppins, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      transition: background 0.3s, color 0.3s;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 20px;
-      background: var(--primary);
-      color: white;
-    }
-    .menu {
-      position: relative;
-    }
-    .menu button {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 24px;
-      cursor: pointer;
-    }
-    .dropdown {
-      display: none;
-      position: absolute;
-      right: 0;
-      top: 40px;
-      background: var(--bg);
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    .dropdown a {
-      display: block;
-      padding: 10px 15px;
-      text-decoration: none;
-      color: var(--text);
-    }
-    .dropdown a:hover {
-      background: rgba(0,0,0,0.1);
-    }
-    main {
-      padding: 20px;
-      text-align: center;
-    }
-    .hidden { display: none; }
-    button {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    input {
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-    .leaderboard {
-      margin-top: 40px;
-      text-align: left;
-      max-width: 400px;
-      margin-inline: auto;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 10px;
-    }
-  </style>
-</head>
-<body data-theme="light">
-  <header>
-    <h2>Study Hub</h2>
-    <div class="menu">
-      <button id="menuBtn">⋮</button>
-      <div class="dropdown" id="menuDropdown">
-        <a href="#" onclick="showSection('calculator')">Calculator</a>
-        <a href="#" onclick="showSection('gpa')">GPA Calculator</a>
-        <a href="#" onclick="showSection('quiz')">Quiz Generator</a>
-        <a href="#" onclick="showSection('feedback')">Feedback</a>
-        <a href="#" onclick="showSection('contact')">Contact</a>
-        <a href="#" onclick="showSection('chat')">Chat</a>
-      </div>
-    </div>
-  </header>
+function saveScore(score) {
+  const users = JSON.parse(localStorage.getItem(userKey) || '[]');
+  const existing = users.find(u=>u.name===currentUser);
+  if (existing) existing.score = Math.max(existing.score, score);
+  else users.push({name: currentUser, score});
+  localStorage.setItem(userKey, JSON.stringify(users));
+}
 
-  <main id="welcomeScreen">
-    <h1>Welcome to Study Hub</h1>
-    <p>Enter your name to continue:</p>
-    <input type="text" id="usernameInput" placeholder="Your name" />
-    <button onclick="enterSite()">Enter</button>
-  </main>
+function loadLeaderboard() {
+  // reset any stale data
+  if (!localStorage.getItem(userKey)) localStorage.setItem(userKey, JSON.stringify([]));
 
-  <main id="mainContent" class="hidden">
-    <button onclick="toggleTheme()">Toggle Dark/Light Mode</button>
-    <section id="calculator" class="hidden">
-      <h3>Calculator</h3>
-      <input id="calcInput" placeholder="e.g. 5+5*2" />
-      <button onclick="calculate()">=</button>
-      <p id="calcResult"></p>
-    </section>
-
-    <section id="gpa" class="hidden">
-      <h3>GPA Calculator</h3>
-      <p>Enter grades separated by commas (e.g. 90,80,100):</p>
-      <input id="gpaInput" />
-      <button onclick="calcGPA()">Calculate</button>
-      <p id="gpaResult"></p>
-    </section>
-
-    <section id="quiz" class="hidden">
-      <h3>Quiz Generator</h3>
-      <p>Select subject:</p>
-      <select id="subjectSelect">
-        <option>Math</option>
-        <option>Biology</option>
-        <option>Arabic</option>
-        <option>Kurdish</option>
-        <option>Turkish</option>
-        <option>English</option>
-      </select>
-      <button onclick="startQuiz()">Start Quiz</button>
-      <div id="quizBox"></div>
-    </section>
-
-    <section id="feedback" class="hidden">
-      <h3>Feedback</h3>
-      <textarea id="feedbackText" placeholder="Your feedback..." rows="4" cols="40"></textarea><br>
-      <button onclick="alert('Thanks for your feedback!')">Send</button>
-    </section>
-
-    <section id="contact" class="hidden">
-      <h3>Contact</h3>
-      <p>Email: <a href="mailto:studyhub@iraq.com">studyhub@iraq.com</a></p>
-      <p>Instagram: <a href="https://instagram.com/Las_omed11">@Las_omed11</a></p>
-    </section>
-
-    <section id="chat" class="hidden">
-      <h3>Chat</h3>
-      <!-- Chatango Embed -->
-      <script id="cid0020000421705628282" data-cfasync="false" async src="//st.chatango.com/js/gz/emb.js" style="width:100%;height:400px;">{"handle":"students-chat","arch":"js","styles":{"a":"CC0000","b":100,"c":"FFFFFF","d":"FFFFFF","k":"CC0000","l":"CC0000","m":"CC0000","n":"FFFFFF","p":"10","q":"CC0000","r":100,"pos":"br","cv":1,"cvbg":"CC0000","cvw":75,"cvh":30,"ticker":1,"fwtickm":1}}</script>
-    </section>
-
-    <div class="leaderboard">
-      <h3>Leaderboard</h3>
-      <ul id="leaderboardList"></ul>
-    </div>
-  </main>
-
-  <script>
-    const menuBtn = document.getElementById('menuBtn');
-    const menuDropdown = document.getElementById('menuDropdown');
-    menuBtn.onclick = () => menuDropdown.style.display = menuDropdown.style.display === 'block' ? 'none' : 'block';
-
-    const userKey = 'studyhubUsers';
-    let currentUser = '';
-
-    function enterSite() {
-      const name = document.getElementById('usernameInput').value.trim();
-      if (!name) return alert('Please enter your name');
-      currentUser = name;
-      document.getElementById('welcomeScreen').classList.add('hidden');
-      document.getElementById('mainContent').classList.remove('hidden');
-      loadLeaderboard();
-    }
-
-    function toggleTheme() {
-      const body = document.body;
-      const theme = body.getAttribute('data-theme');
-      body.setAttribute('data-theme', theme === 'light' ? 'dark' : 'light');
-    }
-
-    function showSection(id) {
-      document.querySelectorAll('#mainContent section').forEach(sec => sec.classList.add('hidden'));
-      document.getElementById(id).classList.remove('hidden');
-      menuDropdown.style.display = 'none';
-    }
-
-    function calculate() {
-      const input = document.getElementById('calcInput').value;
-      try { document.getElementById('calcResult').innerText = eval(input); }
-      catch { document.getElementById('calcResult').innerText = 'Error'; }
-    }
-
-    function calcGPA() {
-      const grades = document.getElementById('gpaInput').value.split(',').map(Number);
-      const avg = grades.reduce((a,b)=>a+b,0)/grades.length || 0;
-      document.getElementById('gpaResult').innerText = 'GPA: ' + (avg/25).toFixed(2);
-    }
-
-    const quizData = {
-      Math: [
-        {q:'2 + 2 = ?',a:['3','4','5','6'],c:1},
-        {q:'5 × 3 = ?',a:['8','15','10','12'],c:1}
-      ],
-      Biology: [
-        {q:'What is the basic unit of life?',a:['Cell','Atom','Molecule','Organ'],c:0},
-        {q:'Which organelle produces energy?',a:['Nucleus','Mitochondria','Ribosome','Chloroplast'],c:1}
-      ],
-      English: [
-        {q:'“Run” is a...',a:['Noun','Verb','Adjective','Pronoun'],c:1},
-        {q:'Opposite of “hot”?',a:['Cold','Warm','Cool','Burn'],c:0}
-      ],
-      Arabic: [
-        {q:'كم عدد حروف اللغة العربية؟',a:['28','27','30','26'],c:0}
-      ],
-      Kurdish: [
-        {q:'What is “school” in Kurdish?',a:['Qutabxane','Xwendn','Mamosta','Pênûs'],c:0}
-      ],
-      Turkish: [
-        {q:'What is “Hello” in Turkish?',a:['Merhaba','Hola','Bonjour','Hallo'],c:0}
-      ]
-    };
-
-    function startQuiz() {
-      const subject = document.getElementById('subjectSelect').value;
-      const box = document.getElementById('quizBox');
-      const questions = quizData[subject];
-      let score = 0, idx = 0;
-      if (!questions) return;
-      renderQuestion();
-
-      function renderQuestion() {
-        if (idx >= 5 || idx >= questions.length) {
-          box.innerHTML = `<h4>Done! You scored ${score}/${idx}</h4>`;
-          saveScore(score);
-          loadLeaderboard();
-          return;
-        }
-        const q = questions[idx];
-        box.innerHTML = `<p>${q.q}</p>` + q.a.map((x,i)=>`<button onclick="check(${i})">${x}</button>`).join('<br>');
-      }
-      window.check = i=>{
-        if (i===questions[idx].c) score++;
-        idx++;
-        renderQuestion();
-      }
-    }
-
-    function saveScore(score) {
-      const users = JSON.parse(localStorage.getItem(userKey) || '[]');
-      const existing = users.find(u=>u.name===currentUser);
-      if (existing) existing.score = Math.max(existing.score, score);
-      else users.push({name: currentUser, score});
-      localStorage.setItem(userKey, JSON.stringify(users));
-    }
-
-    function loadLeaderboard() {
-      const users = JSON.parse(localStorage.getItem(userKey) || '[]');
-      users.sort((a,b)=>b.score - a.score);
-      document.getElementById('leaderboardList').innerHTML =
-        users.map(u=>`<li>${u.name}: ${u.score}</li>`).join('');
-    }
-  </script>
-</body>
-</html>
+  const users = JSON.parse(localStorage.getItem(userKey) || '[]');
+  users.sort((a,b)=>b.score - a.score);
+  const list = document.getElementById('leaderboardList');
+  if (!list) return;
+  if (users.length === 0) {
+    list.innerHTML = "<p>No scores yet — be the first to take a quiz!</p>";
+    return;
+  }
+  list.innerHTML = users.map((u,i)=>{
+    let cls = '';
+    if (i===0) cls='gold';
+    else if (i===1) cls='silver';
+    else if (i===2) cls='bronze';
+    return `<div class="leader-card ${cls}">
+              <span>${i+1}. ${u.name}</span>
+              <span>${u.score}</span>
+            </div>`;
+  }).join('');
+}
